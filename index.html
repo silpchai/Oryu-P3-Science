@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science P.3 Ultimate Quiz</title>
+    <style>
+        :root { --primary: #0984e3; --secondary: #fab1a0; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); padding: 20px; }
+        .container { max-width: 950px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+        h3 { background: #74b9ff; color: white; padding: 10px 20px; border-radius: 10px; margin-top: 40px; }
+
+        /* Drag & Drop Styles */
+        .word-bank { background: #fff9db; border: 2px dashed #f1c40f; padding: 20px; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: sticky; top: 10px; z-index: 100; }
+        .draggable { background: white; border: 2px solid #f1c40f; padding: 8px 15px; border-radius: 8px; cursor: grab; font-weight: bold; transition: 0.2s; }
+        .draggable:active { cursor: grabbing; transform: scale(0.95); }
+        .drop-zone { display: inline-block; width: 130px; height: 30px; border-bottom: 2px solid var(--primary); margin: 0 5px; vertical-align: middle; text-align: center; background: #e3f2fd; border-radius: 4px; }
+        .drop-zone.hover { background: #bbdefb; border: 2px dashed var(--primary); }
+
+        .question-block { margin-bottom: 25px; padding: 15px; border-radius: 10px; background: #fafafa; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .option-label { background: white; border: 1px solid #ddd; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; }
+        .option-label:hover { background: #f1f2f6; }
+        
+        /* Matching Table */
+        .matching-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .matching-table td { padding: 15px; border-bottom: 1px solid #eee; }
+        .matching-table tr:hover { background: #f9f9f9; }
+        select { padding: 8px; border-radius: 5px; border: 1px solid var(--primary); width: 100%; }
+
+        .feedback { font-weight: bold; margin-left: 10px; display: none; }
+        .correct { color: #27ae60; }
+        .incorrect { color: #e74c3c; }
+
+        button#check-btn { display: block; width: 100%; padding: 20px; background: #27ae60; color: white; border: none; border-radius: 12px; font-size: 22px; cursor: pointer; margin-top: 40px; font-weight: bold; }
+        #result-box { display: none; text-align: center; margin-top: 30px; padding: 30px; border-radius: 15px; border: 4px solid #27ae60; background: #f1f9f1; }
+        .img-label { font-size: 0.85em; color: #7f8c8d; font-style: italic; display: block; margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Science Examination: P.3</h1>
+    <p style="text-align: center;">Chapters: Electricity | The Sun | Air</p>
+
+    <form id="quiz-form">
+        <h3>Part 1: Multiple Choice (4 Choices)</h3>
+        
+        <div class="question-block">
+            <p>1. Which of these is a <strong>renewable resource</strong> that will never run out?</p>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q1" value="A"> A. Coal</label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> B. Natural Gas</label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> C. Solar Energy</label>
+                <label class="option-label"><input type="radio" name="q1" value="D"> D. Oil</label>
+            </div>
+            <span class="feedback" id="f1"></span>
+        </div>
+
+        <div class="question-block">
+            <p>2. Fossil fuels like coal and oil are limited. They are ________.</p>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q2" value="A"> A. non-renewable resources</label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> B. geothermal resources</label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> C. clean energy</label>
+                <label class="option-label"><input type="radio" name="q2" value="D"> D. renewable resources</label>
+            </div>
+            <span class="feedback" id="f2"></span>
+        </div>
+
+        <div class="question-block">
+            <p>3. In a power plant, what machine is used to generate electricity?</p>
+            <span class="img-label"></span>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q3" value="A"> A. Pylon</label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> B. Reservoir</label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> C. Generator</label>
+                <label class="option-label"><input type="radio" name="q3" value="D"> D. Motor</label>
+            </div>
+            <span class="feedback" id="f3"></span>
+        </div>
+
+        <div class="question-block">
+            <p>4. Which energy comes from the heat inside the Earth?</p>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q4" value="A"> A. Geothermal energy</label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> B. Wind energy</label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> C. Solar energy</label>
+                <label class="option-label"><input type="radio" name="q4" value="D"> D. Hydro energy</label>
+            </div>
+            <span class="feedback" id="f4"></span>
+        </div>
+
+        <div class="question-block">
+            <p>5. What structure holds high-voltage power lines high above the ground?</p>
+            <span class="img-label"></span>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q5" value="A"> A. Dam</label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> B. Pylon</label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> C. Generator</label>
+                <label class="option-label"><input type="radio" name="q5" value="D"> D. Pole</label>
+            </div>
+            <span class="feedback" id="f5"></span>
+        </div>
+
+        <div class="question-block">
+            <p>6. Where is water stored before it is used to make hydroelectricity?</p>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q6" value="A"> A. Reservoir</label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> B. Pylon</label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> C. Generator</label>
+                <label class="option-label"><input type="radio" name="q6" value="D"> D. Turbine</label>
+            </div>
+            <span class="feedback" id="f6"></span>
+        </div>
+
+        <div class="question-block">
+            <p>7. The spinning of the Earth on its ________ causes day and night.</p>
+            <span class="img-label">
+
+[Image of Earth rotating on its tilted axis]
+</span>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q7" value="A"> A. revolution</label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> B. orbit</label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> C. axis</label>
+                <label class="option-label"><input type="radio" name="q7" value="D"> D. circle</label>
+            </div>
+            <span class="feedback" id="f7"></span>
+        </div>
+
+        <div class="question-block">
+            <p>8. Heat from the Sun causes water to ________ and turn into water vapor.</p>
+            <span class="img-label"></span>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q8" value="A"> A. freeze</label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> B. condense</label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> C. evaporate</label>
+                <label class="option-label"><input type="radio" name="q8" value="D"> D. melt</label>
+            </div>
+            <span class="feedback" id="f8"></span>
+        </div>
+
+        <div class="question-block">
+            <p>9. What do we call Earth's one-year journey around the Sun?</p>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q9" value="A"> A. Rotation</label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> B. Axis</label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> C. Revolution</label>
+                <label class="option-label"><input type="radio" name="q9" value="D"> D. Season</label>
+            </div>
+            <span class="feedback" id="f9"></span>
+        </div>
+
+        <div class="question-block">
+            <p>10. To save energy and reduce pollution, we can ________ with friends.</p>
+            <div class="options-grid">
+                <label class="option-label"><input type="radio" name="q10" value="A"> A. carpool</label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> B. race</label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> C. walk alone</label>
+                <label class="option-label"><input type="radio" name="q10" value="D"> D. drive separately</label>
+            </div>
+            <span class="feedback" id="f10"></span>
+        </div>
+
+        <h3>Part 2: Identification (Drag the words to the blanks)</h3>
+        <div class="word-bank" id="wordBank">
+            <div class="draggable" draggable="true" id="word-heat">Heat</div>
+            <div class="draggable" draggable="true" id="word-night">Night</div>
+            <div class="draggable" draggable="true" id="word-east">East</div>
+            <div class="draggable" draggable="true" id="word-west">West</div>
+            <div class="draggable" draggable="true" id="word-wind">Wind</div>
+            <div class="draggable" draggable="true" id="word-oxygen">Oxygen</div>
+            <div class="draggable" draggable="true" id="word-pollution">Pollution</div>
+            <div class="draggable" draggable="true" id="word-fan">Fan</div>
+            <div class="draggable" draggable="true" id="word-wires">Wires</div>
+            <div class="draggable" draggable="true" id="word-dioxide">Dioxide</div>
+        </div>
+
+        <div class="question-block">11. The Sun gives us light and <div class="drop-zone" id="dz11"></div>. <span class="feedback" id="f11"></span></div>
+        <div class="question-block">12. Day happens when we face the Sun; <div class="drop-zone" id="dz12"></div> happens when we face away. <span class="feedback" id="f12"></span></div>
+        <div class="question-block">13. The Sun appears to rise in the <div class="drop-zone" id="dz13"></div> every morning. <span class="feedback" id="f13"></span></div>
+        <div class="question-block">14. Every evening, the Sun sets in the <div class="drop-zone" id="dz14"></div>. <span class="feedback" id="f14"></span></div>
+        <div class="question-block">15. Moving air that we can feel is called <div class="drop-zone" id="dz15"></div>. <span class="feedback" id="f15"></span></div>
+        <div class="question-block">16. Humans and animals need <div class="drop-zone" id="dz16"></div> from the air to breathe. <span class="feedback" id="f16"></span></div>
+        <div class="question-block">17. Smoke and chemicals in the air lead to air <div class="drop-zone" id="dz17"></div>. <span class="feedback" id="f17"></span></div>
+        <div class="question-block">18. A ceiling <div class="drop-zone" id="dz18"></div> is an appliance that uses electricity. <span class="feedback" id="f18"></span></div>
+        <div class="question-block">19. Electricity is carried into buildings through metal <div class="drop-zone" id="dz19"></div>. <span class="feedback" id="f19"></span></div>
+        <div class="question-block">20. Plants use a gas called Carbon <div class="drop-zone" id="dz20"></div> to make food. <span class="feedback" id="f20"></span></div>
+
+        <h3>Part 3: Matching Type (Select the correct Vocabulary)</h3>
+        <table class="matching-table">
+            <tr>
+                <td>21. A machine that converts movement into electricity.</td>
+                <td><select id="m21"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm21"></span></td>
+            </tr>
+            <tr>
+                <td>22. The imaginary line that the Earth rotates on.</td>
+                <td><select id="m22"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm22"></span></td>
+            </tr>
+            <tr>
+                <td>23. To turn from a liquid (like water) into a gas.</td>
+                <td><select id="m23"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm23"></span></td>
+            </tr>
+            <tr>
+                <td>24. Sharing a car journey with others.</td>
+                <td><select id="m24"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm24"></span></td>
+            </tr>
+            <tr>
+                <td>25. Heat energy derived from the Earth's interior.</td>
+                <td><select id="m25"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm25"></span></td>
+            </tr>
+            <tr>
+                <td>26. A large lake used as a source of water supply.</td>
+                <td><select id="m26"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm26"></span></td>
+            </tr>
+            <tr>
+                <td>27. Earth's movement around the Sun (1 year).</td>
+                <td><select id="m27"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm27"></span></td>
+            </tr>
+            <tr>
+                <td>28. A tall metal structure used for carrying electricity cables.</td>
+                <td><select id="m28"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm28"></span></td>
+            </tr>
+            <tr>
+                <td>29. Energy sources that are replaced naturally (Sun, Wind).</td>
+                <td><select id="m29"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm29"></span></td>
+            </tr>
+            <tr>
+                <td>30. Energy sources that will eventually run out (Coal, Oil).</td>
+                <td><select id="m30"><option value="">-- Choose Word --</option><option>Generator</option><option>Axis</option><option>Evaporate</option><option>Carpool</option><option>Geothermal energy</option><option>Reservoir</option><option>Revolution</option><option>Pylon</option><option>Renewable resources</option><option>Non-renewable resources</option></select> <span class="feedback" id="fm30"></span></td>
+            </tr>
+        </table>
+
+        <button type="button" id="check-btn" onclick="checkAll()">Submit & View Score</button>
+    </form>
+
+    <div id="result-box">
+        <h2 id="final-score-text"></h2>
+        <p id="grade-comment"></p>
+        <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer;">Try Again</button>
+    </div>
+</div>
+
+<script>
+    // Drag and Drop Logic
+    const draggables = document.querySelectorAll('.draggable');
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', () => draggable.classList.add('dragging'));
+        draggable.addEventListener('dragend', () => draggable.classList.remove('dragging'));
+    });
+
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', e => {
+            e.preventDefault();
+            zone.classList.add('hover');
+        });
+        zone.addEventListener('dragleave', () => zone.classList.remove('hover'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('hover');
+            const draggingWord = document.querySelector('.dragging');
+            zone.innerText = draggingWord.innerText;
+            zone.dataset.answer = draggingWord.innerText;
+        });
+    });
+
+    function checkAll() {
+        let score = 0;
+
+        // MCQ Answers
+        const mcqAns = { q1: "C", q2: "A", q3: "C", q4: "A", q5: "B", q6: "A", q7: "C", q8: "C", q9: "C", q10: "A" };
+        for (let i = 1; i <= 10; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const fb = document.getElementById(`f${i}`);
+            fb.style.display = "inline";
+            if (selected && selected.value === mcqAns[`q${i}`]) { score++; fb.innerHTML = "✔"; fb.className="feedback correct"; }
+            else { fb.innerHTML = "✘ (Ans: "+mcqAns[`q${i}`]+")"; fb.className="feedback incorrect"; }
+        }
+
+        // Identification (Drag & Drop) Answers
+        const identAns = { dz11: "Heat", dz12: "Night", dz13: "East", dz14: "West", dz15: "Wind", dz16: "Oxygen", dz17: "Pollution", dz18: "Fan", dz19: "Wires", dz20: "Dioxide" };
+        for (let i = 11; i <= 20; i++) {
+            const zone = document.getElementById(`dz${i}`);
+            const fb = document.getElementById(`f${i}`);
+            fb.style.display = "inline";
+            if (zone.dataset.answer === identAns[`dz${i}`]) { score++; fb.innerHTML = "✔"; fb.className="feedback correct"; }
+            else { fb.innerHTML = "✘ (Ans: "+identAns[`dz${i}`]+")"; fb.className="feedback incorrect"; }
+        }
+
+        // Matching Answers
+        const matchAns = { m21: "Generator", m22: "Axis", m23: "Evaporate", m24: "Carpool", m25: "Geothermal energy", m26: "Reservoir", m27: "Revolution", m28: "Pylon", m29: "Renewable resources", m30: "Non-renewable resources" };
+        for (let i = 21; i <= 30; i++) {
+            const sel = document.getElementById(`m${i}`);
+            const fb = document.getElementById(`fm${i}`);
+            fb.style.display = "inline";
+            if (sel.value === matchAns[`m${i}`]) { score++; fb.innerHTML = "✔"; fb.className="feedback correct"; }
+            else { fb.innerHTML = "✘"; fb.className="feedback incorrect"; }
+        }
+
+        // Final Score display
+        const resBox = document.getElementById('result-box');
+        resBox.style.display = 'block';
+        document.getElementById('final-score-text').innerText = "Score: " + score + " / 30";
+        const comment = document.getElementById('grade-comment');
+        if (score >= 25) comment.innerText = "Excellent! You're a Science Master! 🌟";
+        else if (score >= 15) comment.innerText = "Good job! Keep studying. 📚";
+        else comment.innerText = "Don't give up! Try reviewing the lessons again. 💪";
+
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
